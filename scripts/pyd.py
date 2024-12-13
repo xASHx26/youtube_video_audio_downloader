@@ -1,9 +1,10 @@
 import yt_dlp
 import os
 import sys
+import tkinter as tk
+from tkinter import filedialog
 
 def get_unique_filename(download_path, filename):
-    
     base, ext = os.path.splitext(filename)
     counter = 1
     unique_filename = filename
@@ -12,11 +13,9 @@ def get_unique_filename(download_path, filename):
         counter += 1
     return unique_filename
 
-def download(link, download_type):
-    download_path = r"D:\Downlowd\youtube downlowd"  
+def download(link, download_type, download_path):
     os.makedirs(download_path, exist_ok=True)
 
-   
     if download_type == "video":
         filename_template = '%(title)s.%(ext)s'
     elif download_type == "audio":
@@ -25,14 +24,12 @@ def download(link, download_type):
         print("Invalid download type. Please choose 'video' or 'audio'.")
         sys.exit(1)
 
-    
     options = {'outtmpl': os.path.join(download_path, filename_template)}
     with yt_dlp.YoutubeDL(options) as ydl:
         info = ydl.extract_info(link, download=False)
         title = info.get('title', 'video')
         ext = info.get('ext', 'mp4' if download_type == "video" else 'm4a')
 
-    
     unique_filename = get_unique_filename(download_path, f"{title}.{ext}")
 
     options = {
@@ -43,18 +40,24 @@ def download(link, download_type):
     with yt_dlp.YoutubeDL(options) as ydl:
         ydl.download([link])
 
+def select_download_path():
+    root = tk.Tk()
+    root.withdraw()  # Hide the root window
+    download_path = filedialog.askdirectory(title="Select download folder")
+    return download_path
+
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Usage: pyd <video_link>")
         sys.exit(1)
-    
+
     video_link = sys.argv[1]
 
     print("Choose download type:")
     print("1) Video")
     print("2) Audio")
     choice = input("Enter 1 or 2: ")
-    
+
     if choice == "1":
         download_type = "video"
     elif choice == "2":
@@ -62,5 +65,10 @@ if __name__ == "__main__":
     else:
         print("Invalid choice. Please enter 1 or 2.")
         sys.exit(1)
-    
-    download(video_link, download_type)
+
+    download_path = select_download_path()
+    if not download_path:
+        print("No folder selected. Exiting.")
+        sys.exit(1)
+
+    download(video_link, download_type, download_path)
