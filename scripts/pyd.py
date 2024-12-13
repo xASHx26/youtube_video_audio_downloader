@@ -1,8 +1,6 @@
 import yt_dlp
 import os
 import sys
-import tkinter as tk
-from tkinter import filedialog
 
 def get_unique_filename(download_path, filename):
     base, ext = os.path.splitext(filename)
@@ -13,7 +11,11 @@ def get_unique_filename(download_path, filename):
         counter += 1
     return unique_filename
 
-def download(link, download_type, download_path):
+def download(link, download_type):
+    download_path = r"D:\Downlowd\youtube downlowd"
+    if not os.path.exists("D:"):
+        download_path = os.path.join(os.path.expanduser("~"), "Downloads", "youtube_downloading")
+
     os.makedirs(download_path, exist_ok=True)
 
     if download_type == "video":
@@ -40,12 +42,6 @@ def download(link, download_type, download_path):
     with yt_dlp.YoutubeDL(options) as ydl:
         ydl.download([link])
 
-def select_download_path():
-    root = tk.Tk()
-    root.withdraw()  # Hide the root window
-    download_path = filedialog.askdirectory(title="Select download folder")
-    return download_path
-
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Usage: pyd <video_link>")
@@ -66,9 +62,4 @@ if __name__ == "__main__":
         print("Invalid choice. Please enter 1 or 2.")
         sys.exit(1)
 
-    download_path = select_download_path()
-    if not download_path:
-        print("No folder selected. Exiting.")
-        sys.exit(1)
-
-    download(video_link, download_type, download_path)
+    download(video_link, download_type)
