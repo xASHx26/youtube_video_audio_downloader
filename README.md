@@ -48,6 +48,3 @@
    - If the video supports **4K resolution** or above, the script will ask whether you want to download **4K** or **1080p**.  
    - If the highest available quality is 1080p or below, it will download automatically.
 
----
-
-This structured, step-by-step guide ensures clarity for users setting up the YouTube downloader. Let me know if you'd like to add more examples or details! 🚀
